@@ -1,0 +1,17 @@
+name: NestLayeredTypeORM
+
+services:
+  postgresql:
+    image: postgres:17
+    container_name: nest-layered-typeorm-postgresql
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: IXxy05hi42CpwX8iWs53TGvHGNzSKJSuT
+      POSTGRES_DB: nest-layered-typeorm
+    volumes:
+      - postgresql:/var/lib/postgresql/data
+
+volumes:
+  postgresql:

@@ -10,6 +10,10 @@ import {
   ThrottlerConfig,
   throttlerConfig,
 } from './shared/config/throttler.config';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { DbConfig, dbConfig } from './shared/config/db.config';
+
+import path from 'node:path';
 
 @Module({
   imports: [
@@ -26,6 +30,24 @@ import {
           limit: config.limit,
         },
       ],
+    }),
+    TypeOrmModule.forRootAsync({
+      imports: [ConfigModule.forFeature(dbConfig)],
+      inject: [dbConfig.KEY],
+      useFactory: (config: DbConfig) => {
+        return {
+          type: 'postgres',
+          host: config.host,
+          port: config.port,
+          username: config.username,
+          password: config.password,
+          database: config.database,
+          autoLoadEntities: true,
+          entities: [path.join(__dirname, '/modules/**/*.entity{.ts,.js}')],
+          synchronize: process.env.NODE_ENV === 'development',
+          logging: process.env.NODE_ENV === 'development',
+        };
+      },
     }),
   ],
   controllers: [AppController],
